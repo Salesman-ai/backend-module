@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, make_response
 import requests
 import os
 from dotenv import load_dotenv
@@ -19,12 +19,13 @@ except Exception as error:
 @app.route('/api/get-price', method=['GET'])
 def get_price():
     prediction = None
+    response = None
+    code = None
     backend_log.info(f"Function 'get_price()' started")
     request_log.info(f"Request was received from <{request.remote_addr}>.")
     try:
         request_data = request.get_json()
         request_log.info(f"Request was sent to the prediction module")
-
         try:
             prediction = requests.get(url = os.getenv('PREDICTION_URL'), params = request_data)
             request_log.info(f"Response was received from  prediction module")
@@ -36,7 +37,8 @@ def get_price():
         backend_log.error(f"Function 'get_price()' failed. Status: {error}")
         request_log.error(f"Request received from <{request.remote_addr}> failed.")
     finally:
-        return prediction
+        response = make_response(prediction, code)
+        return response
 
 
 if __name__ == '__main__':
