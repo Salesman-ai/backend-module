@@ -2,7 +2,7 @@ import psycopg2
 import os
 from dotenv import load_dotenv
 from pathlib import Path
-from logger.log import log
+from logger.log import database_log 
 
 config_path = Path('./config.cfg')
 load_dotenv(dotenv_path=config_path)
@@ -18,6 +18,6 @@ def generate_connection():
             port=os.environ.get("POSTGRES_PORT")
         )
     except Exception as error:
-        log.error(error)
+        database_log.error(error)
     finally:
         return conn

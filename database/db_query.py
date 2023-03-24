@@ -1,6 +1,6 @@
 from db_conn import generate_connection
 import psycopg2
-from logger.log import log
+from logger.log import database_log
 
 def check_connection():
     conn = None
@@ -9,9 +9,9 @@ def check_connection():
         cursor = conn.cursor()
         cursor.execute("SELECT VERSION()")
         data = cursor.fetchone()
-        log.info(f"Connection established to: {data}")
+        database_log.info(f"Connection established to: {data}")
     except (Exception, psycopg2.DatabaseError) as error:
-        log.error(error)
+        database_log.error(error)
     finally:
         if conn is not None:
             conn.close()
@@ -25,9 +25,9 @@ def insert_price(data):
         cursor.execute(sql, (data,))
         conn.commit()
         cursor.close()
-        log.info(f"Data: {data} inserted")
+        database_log.info(f"Data: {data} inserted")
     except (Exception, psycopg2.DatabaseError) as error:
-        log.error(error)
+        database_log.error(error)
     finally:
         if conn is not None:
             conn.close()
