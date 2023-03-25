@@ -1,0 +1,43 @@
+name: Deploy Backend to Production-repository
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  copy-files:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Get Backend repository
+      uses: actions/checkout@v2
+
+    - name: Clone Production repository
+      uses: actions/checkout@v2
+      with:
+        repository: Salesman-ai/production-repository
+        path: /home/runner/work/backend-repository/backend-repository/production-repository
+        token: ${{ secrets.REPO_ACCESS_TOKEN }}
+
+    - name: Remove old files from Production repository
+      run: |
+        cd /home/runner/work/backend-repository/backend-repository/production-repository
+        rm -rf Backend
+        mkdir Backend
+
+    - name: Copy files from repo X to repo Y
+      run: |
+        cd /home/runner/work/backend-repository/backend-repository
+        cp -R database production-repository/Backend/database
+        cp -R logger production-repository/Backend/logger
+        cp main.py production-repository/Backend/main.py
+
+
+    - name: Commit and push changes to production-repository
+      run: |
+        cd /home/runner/work/backend-repository/backend-repository/production-repository
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        git commit -m "Update Backend folder [via Backend repository]"
+        git push origin master
