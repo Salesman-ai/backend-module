@@ -25,7 +25,7 @@ jobs:
         rm -rf Backend
         mkdir Backend
 
-    - name: Copy files from repo X to repo Y
+    - name: Copy files from Backend repo to Production repo
       run: |
         cd /home/runner/work/backend-repository/backend-repository
         cp -R database production-repository/Backend/database
@@ -40,4 +40,4 @@ jobs:
         git config --local user.name "GitHub Action"
         git add .
         git commit -m "Update Backend folder [via Backend repository]"
-        git push origin master
+        git push origin main
