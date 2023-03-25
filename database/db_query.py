@@ -1,6 +1,8 @@
-from db_conn import generate_connection
+from database.db_conn import generate_connection
 import psycopg2
-from logger.log import database_log
+import sys
+sys.path.append('../')
+from logger.log import log
 
 def check_connection():
     conn = None
@@ -9,25 +11,25 @@ def check_connection():
         cursor = conn.cursor()
         cursor.execute("SELECT VERSION()")
         data = cursor.fetchone()
-        database_log.info(f"Connection established to: {data}")
+        log.database.info(f"Valid connection")
     except (Exception, psycopg2.DatabaseError) as error:
-        database_log.error(error)
+        log.database.error(error)
     finally:
         if conn is not None:
             conn.close()
 
-def insert_price(data):
-    sql = """INSERT INTO ..."""
+def insert_price(id, ip, car_name, car_type, car_price):
+    sql = """INSERT INTO results (id, user_ip, car_name, car_type, car_price) VALUES (%s, %s, %s, %s, %s)"""
     conn = None
     try:
         conn =  generate_connection()
         cursor = conn.cursor()
-        cursor.execute(sql, (data,))
+        cursor.execute(sql, (id, str(ip), str(car_name), str(car_type), car_price,))
         conn.commit()
         cursor.close()
-        database_log.info(f"Data: {data} inserted")
+        log.database.info(f"Data inserted")
     except (Exception, psycopg2.DatabaseError) as error:
-        database_log.error(error)
+        log.database.error(error)
     finally:
         if conn is not None:
             conn.close()

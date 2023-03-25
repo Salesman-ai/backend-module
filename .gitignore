@@ -1,0 +1,6 @@
+backend_logs.log
+database_logs.log
+request_logs.log
+database/__pycache__
+logger/__pycache__
+config.cfg

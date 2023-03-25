@@ -1,10 +1,11 @@
-from flask import Flask, request, make_response
+from flask import Flask, request, make_response, json
 import requests
 import os
 from dotenv import load_dotenv
 from pathlib import Path
-from logger.log import backend_log
-from logger.log import request_log
+from logger.log import log
+from database.db_query import insert_price
+from database.db_initialize import is_database_exist
 
 
 app = Flask(__name__)
@@ -12,35 +13,46 @@ try:
     config_path = Path('./config.cfg')
     load_dotenv(dotenv_path=config_path)
 except Exception as error:
-    backend_log.error(f"Failed to load configuration file - {error}")
+    log.backend.error(f"Failed to load configuration file - {error}")
     exit()
 
 
-@app.route('/api/get-price', method=['GET'])
+def summary(body, status_code):
+    return app.response_class(response=json.dumps(body),
+                              status=status_code,
+                              mimetype='application/json')
+
+
+@app.route('/api/get-price')
 def get_price():
-    prediction = None
+    #prediction = None
     response = None
-    code = None
-    backend_log.info(f"Function 'get_price()' started")
-    request_log.info(f"Request was received from <{request.remote_addr}>.")
+    #code = None
+    log.backend.info(f"Function 'get_price()' started")
+    log.request.info(f"Request was received from <{request.remote_addr}>.")
     try:
-        request_data = request.get_json()
-        request_log.info(f"Request was sent to the prediction module")
+        request_data = request.args
+        log.request.info(f"Request was sent to the prediction module")
         try:
-            prediction = requests.get(url = os.getenv('PREDICTION_URL'), params = request_data)
-            request_log.info(f"Response was received from  prediction module")
+            #prediction = requests.get(url = os.getenv('PREDICTION_URL'), params = request_data)
+            #prediction = request_data['kurwa']
+            log.request.info(f"Response was received from  prediction module")
         
         except Exception as error:
-            request_log.error(f"Response was not obtained from the prediction model. Error log - {error}")
+            log.request.error(f"Response was not obtained from the prediction model. Error log - {error}")
     
     except Exception as error:
-        backend_log.error(f"Function 'get_price()' failed. Status: {error}")
-        request_log.error(f"Request received from <{request.remote_addr}> failed.")
+        log.backend.error(f"Function 'get_price()' failed. Status: {error}")
+        log.request.error(f"Request received from <{request.remote_addr}> failed.")
     finally:
-        response = make_response(prediction, code)
+        #response = summary(10000, 200)
+        #insert_price(1, str(request.remote_addr), "honda", "civic", 10000)
+        log.request.info(f"Response returned")
+        log.backend.info(f"Function 'get_price()' finished")
         return response
 
 
 if __name__ == '__main__':
-    backend_log.info("Start working on the logic module...")
-    app.run(debug=False, port=8080)
+    log.backend.info("Start working on the logic module...")
+    is_database_exist()
+    app.run(debug=True, port=9000)

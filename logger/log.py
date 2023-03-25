@@ -1,68 +1,28 @@
 import logging
 
-class backend_log():
 
-    logging.basicConfig(filename='backend_logs.log',
-                        filemode='a',
-                        format='[%(asctime)s][%(levelname)s]: %(message)s',
-                        datefmt='%d-%b-%y %H:%M:%S',
-                        level=logging.DEBUG)
+class log_collection():
+    backend = None
+    database = None
+    request = None
 
-    def debug(message):
-        logging.debug(message)
+def setup_logger(logger_name, log_file, level=logging.INFO):
+    log = logging.getLogger(logger_name)
+    formatter = logging.Formatter(fmt='[%(asctime)s][%(levelname)s]: %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+    fileHandler = logging.FileHandler(log_file, mode='a')
+    fileHandler.setFormatter(formatter)
+    streamHandler = logging.StreamHandler()
+    streamHandler.setFormatter(formatter)
+    log.setLevel(level)
+    log.addHandler(fileHandler)
+    log.addHandler(streamHandler)    
 
-    def info(message):
-        logging.info(message)
+log = log_collection()
 
-    def warning(message):
-        logging.warning(message)
+setup_logger('backend', "backend_logs.log")
+setup_logger('request', "request_logs.log")
+setup_logger('database', "database_logs.log")
 
-    def error(message):
-        logging.error(message)
-
-    def critical(message):
-        logging.critical(message)
-
-class database_log():
-    logging.basicConfig(filename='database_logs.log',
-                        filemode='a',
-                        format='[%(asctime)s][%(levelname)s]: %(message)s',
-                        datefmt='%d-%b-%y %H:%M:%S',
-                        level=logging.DEBUG)
-
-    def debug(message):
-        logging.debug(message)
-
-    def info(message):
-        logging.info(message)
-
-    def warning(message):
-        logging.warning(message)
-
-    def error(message):
-        logging.error(message)
-
-    def critical(message):
-        logging.critical(message)
-
-class request_log():
-    logging.basicConfig(filename='request_logs.log',
-                        filemode='a',
-                        format='[%(asctime)s][%(levelname)s]: %(message)s',
-                        datefmt='%d-%b-%y %H:%M:%S',
-                        level=logging.DEBUG)
-
-    def debug(message):
-        logging.debug(message)
-
-    def info(message):
-        logging.info(message)
-
-    def warning(message):
-        logging.warning(message)
-
-    def error(message):
-        logging.error(message)
-
-    def critical(message):
-        logging.critical(message)
+log.backend=logging.getLogger('backend')
+log.database=logging.getLogger('database')
+log.request=logging.getLogger('request')
