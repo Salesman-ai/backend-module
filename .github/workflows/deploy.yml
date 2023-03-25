@@ -16,18 +16,18 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: Salesman-ai/production-repository
-        path: /home/runner/work/backend-repository/backend-repository/production-repository
+        path: /home/runner/work/backend-module/backend-module/production-repository
         token: ${{ secrets.REPO_ACCESS_TOKEN }}
 
     - name: Remove old files from Production repository
       run: |
-        cd /home/runner/work/backend-repository/backend-repository/production-repository
+        cd /home/runner/work/backend-module/backend-module/production-repository
         rm -rf Backend
         mkdir Backend
 
     - name: Copy files from Backend repo to Production repo
       run: |
-        cd /home/runner/work/backend-repository/backend-repository
+        cd /home/runner/work/backend-module/backend-module
         cp -R database production-repository/Backend/database
         cp -R logger production-repository/Backend/logger
         cp main.py production-repository/Backend/main.py
@@ -35,7 +35,7 @@ jobs:
 
     - name: Commit and push changes to production-repository
       run: |
-        cd /home/runner/work/backend-repository/backend-repository/production-repository
+        cd /home/runner/work/backend-module/backend-module/production-repository
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add .
