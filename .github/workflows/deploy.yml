@@ -30,7 +30,7 @@ jobs:
         cd /home/runner/work/backend-module/backend-module
         cp -R database production-repository/Backend/database
         cp -R logger production-repository/Backend/logger
-        cp main.py production-repository/Backend/main.py
+        cp app.py production-repository/Backend/app.py
         cp requirements.txt production-repository/Backend/requirements.txt
 
     - name: Commit and push changes to production-repository
