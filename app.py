@@ -25,38 +25,35 @@ def summary(body, status_code):
                               mimetype='application/json')
 
 
-@app.route('/api/get-price', methods = ['GET', 'POST'])
+@app.route('/api/get-price', method=['POST'])
 def get_price():
     if request.method == 'POST':
-        #prediction = None
-        log.backend.info(request.form)
-        log.backend.info(request.get_json)
-        log.backend.info(request.get_data)
-        log.backend.info(request.data)
-
-        response = None
+        req = request.data
+        res = None
         #code = None
         log.backend.info(f"Function 'get_price()' started")
         log.request.info(f"Request was received from <{request.remote_addr}>.")
         try:
             log.request.info(f"Request was sent to the prediction module")
             try:
-                #prediction = requests.get(url = os.getenv('PREDICTION_URL'), params = request_data)
-                #prediction = request_data['kurwa']
+                #prediction = requests.get(url = os.getenv('PREDICTION_URL'), params = req)
                 log.request.info(f"Response was received from  prediction module")
             
             except Exception as error:
                 log.request.error(f"Response was not obtained from the prediction model. Error log - {error}")
+                res = summary("Connection to prediction server failure...", 503)
+                return res
         
         except Exception as error:
             log.backend.error(f"Function 'get_price()' failed. Status: {error}")
             log.request.error(f"Request received from <{request.remote_addr}> failed.")
-        finally:
-            response = summary(10000, 200)
-            #insert_price(1, str(request.remote_addr), "honda", "civic", 10000)
-            log.request.info(f"Response returned")
-            log.backend.info(f"Function 'get_price()' finished")
-            return response
+            res = summary("Connection failure...", 500)
+            return res
+        
+        res = summary(10000, 200)
+        log.request.info(f"Response returned")
+        log.backend.info(f"Function 'get_price()' finished")
+        return res
 
 
 if __name__ == '__main__':
