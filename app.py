@@ -30,13 +30,12 @@ def get_price():
     if request.method == 'POST':
         req = request.data
         res = None
-        #code = None
         log.backend.info(f"Function 'get_price()' started")
         log.request.info(f"Request was received from <{request.remote_addr}>.")
+
         try:
             log.request.info(f"Request was sent to the prediction module")
             try:
-                #prediction = requests.get(url = os.getenv('PREDICTION_URL'), params = req)
                 log.request.info(f"Response was received from  prediction module")
             
             except Exception as error:
