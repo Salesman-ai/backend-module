@@ -31,6 +31,7 @@ jobs:
         cp -R database production-repository/Backend/database
         cp -R logger production-repository/Backend/logger
         cp app.py production-repository/Backend/app.py
+        cp test_app.py production-repository/Backend/test_app.py
         cp requirements.txt production-repository/Backend/requirements.txt
 
     - name: Commit and push changes to production-repository
