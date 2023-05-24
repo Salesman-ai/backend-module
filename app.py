@@ -39,6 +39,32 @@ def get_price():
         log.backend.info(f"Function 'get_price()' started")
         log.request.info(f"Request was received from <{request.remote_addr}>.")
 
+
+        try:
+            for key in req:
+                if req[key] == '':
+                    log.request.error(f"Request received from failed. Missing parameters.")
+                    return summary("Missing parameters", 400)
+        except Exception as e:
+            log.request.error(f"Request received from failed. Missing parameters.")
+            return summary("Missing parameters", 400)
+        
+        if req["year"] < 1900:
+            log.request.error(f"Request received from failed. Year parameter is too low.")
+            return summary("Year parameter is too low", 400)
+        
+        if req["year"] > 2023:
+            log.request.error(f"Request received from failed. Year parameter is too high.")
+            return summary("Year parameter is too high", 400)
+
+        if req["power"] > 1000:
+            log.request.error(f"Request received from failed. Power parameter is too high.")
+            return summary("Power parameter is too high", 400)
+        
+        if req["engineDisplacement"] > 20:
+            log.request.error(f"Request received from failed. Engine parameter is too high.")
+            return summary("Engine parameter is too high", 400)
+
         try:
             log.request.info(f"Request was sent to the prediction module")
             try:
